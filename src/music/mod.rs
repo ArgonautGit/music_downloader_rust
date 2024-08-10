@@ -8,23 +8,43 @@ struct Song {
 
 impl Song {
     pub fn new(url: &str) -> Song {
-        // TODO
+        const DEFAULT: String = String::new();
+        let mut song = Song {
+            url: url.into(),
+            // Initialize the rest into nothing (default values)
+            title: DEFAULT,
+            album: DEFAULT,
+            artist: DEFAULT,
+            id: DEFAULT,
+        };
 
-        Song { title: "".to_owned(), album: "".to_owned(), artist: "".to_owned(), id: "".to_owned(), url: "".to_owned() }
+        song.get_info();
+
+        return song;
     }
 
-    fn get_info(&self) {
+    fn get_info(&mut self) {
         bash::shell_command(&self.url);
+
+        // TODO: write new info to struct.
     }
 }
 
-mod bash {
+pub mod bash {
     pub fn shell_command(command: &str) {
-        std::process::Command::new(command);
+        use std::process::Command;
+
+        let process = Command::new(command)
+            .output()
+            .expect("Failed to execute process.");
+
+        let output = String::from_utf8_lossy(&process.stdout);
+        let output = output.trim();
+
+        dbg!(output);
     }
 
-    fn shell_command_stdout(command: &str) {
-        // TODO
+    fn _shell_command_stdout(_command: &str) {
+        // TODO: P
     }
-
 }
