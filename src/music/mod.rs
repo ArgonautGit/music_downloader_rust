@@ -2,6 +2,7 @@ use sscanf;
 
 /// Struct to represent songs. Most of their info can be derived from the url
 /// using built-in function implementations.
+#[derive(Debug)]
 pub struct Song {
     title: String,
     album: String,
@@ -21,7 +22,7 @@ impl Song {
         return song;
     }
 
-    pub fn get_info(&mut self) -> &mut Self {
+    fn get_info(&mut self) -> &mut Self {
         // Set up shell command.
         let command = format!(
             "yt-dlp --quiet --no-warnings --print \"id: %(id)s, title: %(title)s, artist: %(channel)s, album: %(album)s,\" {}",
@@ -41,32 +42,32 @@ impl Song {
             String
         )
         .expect("Failed to parse song info!")
-        .to_owned();
+        .to_owned(); // Create owned `String`.
 
+        // Write new values to struct (is there a easier way to do this?).
         self.id = id;
         self.title = title;
         self.artist = artist;
         self.album = album;
 
         return self;
-        // TODO: write new info to struct.
     }
 }
 
 impl Default for Song {
     fn default() -> Song {
-        Song {
+        return Song {
             title: "".to_owned(),
             album: "".to_owned(),
             artist: "".to_owned(),
             id: "".to_owned(),
             url: "".to_owned(),
-        }
+        };
     }
 }
 
 /// Module to run bash commands and receive their output.
-pub mod shell {
+mod shell {
 
     /// # Description
     /// Takes a shell command and returns a `String` containing the output.
@@ -92,7 +93,40 @@ pub mod shell {
         return output;
     }
 
-    fn _shell_command_stdout(_command: &str) {
-        // TODO: Print out put to stdout.a
+    pub fn _shell_command_stdout(_command: &str) /*-> String*/ {
+        // TODO: Print out put to stdout.
+    }
+}
+
+#[allow(dead_code)]
+pub mod file {
+    use super::shell;
+
+    pub fn list_songs_directory() -> Vec<String> {
+        use super::parse;
+
+        // Prepare command to run.
+        let command = "ls";
+        // Run command.
+        let output = shell::shell_command(command);
+
+        return parse::parse_music_directory(&output);
+    }
+}
+
+#[allow(dead_code)]
+mod parse {
+    /// Takes the output from ls and returns a vector of file names.
+    pub fn parse_music_directory(ls_output: &str) -> Vec<String> {
+        // Create `String` vector to hold the names of all the songs in the music directory.
+        let mut song_files = Vec::new();
+        // let mut current_word
+        // for i in ls_output.chars() {
+        //     while (i != '\'') || (i != '\n') { song_list.get }
+        // };
+
+
+
+        return song_files;
     }
 }
