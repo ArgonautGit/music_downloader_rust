@@ -1,22 +1,14 @@
-mod music;
+use log::LevelFilter;
 
-use std::fs;
-use sscanf::sscanf;
+mod download;
 
-fn main() {
-    // let _test_song = music::Song::new("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+fn main() -> anyhow::Result<()> {
+    simple_logger::SimpleLogger::new()
+        .env()
+        .with_level(LevelFilter::Off)
+        .with_module_level("automation", LevelFilter::Debug)
+        .init()
+        .expect("Failed to start logger");
 
-    // music::file::list_songs_directory();
-
-    let paths = fs::read_dir("./music").expect("Failed to read directory!");
-
-    let mut song_files = Vec::new();
-    for i in paths {
-        let filename = i.expect("Could not get filename!").path()
-        .display()
-        .to_string();
-        
-        let filename = sscanf!(filename, "./music/{}", String).expect("Failed to parse filename!");
-        song_files.push(filename);
-    } println!();
+    Ok(())
 }
